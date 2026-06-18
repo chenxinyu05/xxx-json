@@ -3,6 +3,14 @@
 
 #include <stdlib.h>
 
+#ifndef RESTRICT
+# ifdef __cplusplus
+#   define RESTRICT __restrict
+# else
+#   define RESTRICT restrict
+# endif
+#endif
+
 #ifndef XXX_JSON_FREE
 # define XXX_JSON_FREE(ptr) free(ptr)
 #endif
@@ -21,7 +29,7 @@
 
 #ifndef XXX_JSON_ERROR
 # include <stdio.h>
-# define XXX_JSON_ERROR(format, ...) fprintf(stderr, "xxx_json error: " format "\n", ##__VA_ARGS__)
+# define XXX_JSON_ERROR(format, ...) fprintf(stderr, "%s:%d Error: " format "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 #endif
 
 enum XXX_JSON_TYPE {
@@ -40,23 +48,6 @@ typedef struct xxx_json_object xxx_json_object_t;
 extern "C" {
 #endif
 
-#ifndef XXX_RESTRICT
-    #if defined(__cplusplus)
-        // C++ 环境下：只在主流编译器中启用 __restrict 扩展
-        #if defined(_MSC_VER) || defined(__GNUC__) || defined(__clang__)
-            #define XXX_RESTRICT __restrict
-        #else
-            #define XXX_RESTRICT /* 遇到严格或冷门的 C++ 编译器，安全退化为空 */
-        #endif
-    #elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
-        // C 环境下：只有当编译器明确声明支持 C99 或更高版本时，才使用原生 restrict
-        #define XXX_RESTRICT restrict
-    #else
-        // 古老的 C89/C90 环境：安全退化为空
-        #define XXX_RESTRICT
-    #endif
-#endif
-
 static inline int xxx_json_init(xxx_json_t *self);
 static inline void xxx_json_deinit(xxx_json_t *self);
 
@@ -70,7 +61,7 @@ static inline void xxx_json_boolean_move(xxx_json_boolean_t *dst, xxx_json_boole
 
 static inline int xxx_json_number_init(xxx_json_number_t *self);
 static inline void xxx_json_number_deinit(xxx_json_number_t *self);
-static inline int xxx_json_number_copy(xxx_json_number_t *XXX_RESTRICT dst, const xxx_json_number_t *XXX_RESTRICT src);
+static inline int xxx_json_number_copy(xxx_json_number_t *RESTRICT dst, const xxx_json_number_t *RESTRICT src);
 static inline void xxx_json_number_move(xxx_json_number_t *dst, xxx_json_number_t *src);
 
 static inline int xxx_json_string_init(xxx_json_string_t *self);
