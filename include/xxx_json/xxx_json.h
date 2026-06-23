@@ -1,35 +1,17 @@
 #ifndef XXX_JSON_H
 #define XXX_JSON_H
 
-#include <stdlib.h>
-
-#ifndef RESTRICT
-# ifdef __cplusplus
-#   define RESTRICT __restrict
-# else
-#   define RESTRICT restrict
-# endif
-#endif
-
-#ifndef XXX_JSON_FREE
-# define XXX_JSON_FREE(ptr) free(ptr)
-#endif
-
-#ifndef XXX_JSON_MALLOC
-# define XXX_JSON_MALLOC(size) malloc(size)
-#endif
-
-#ifndef XXX_JSON_REALLOC
-# define XXX_JSON_REALLOC(size) realloc(size)
-#endif
-
-#ifndef XXX_JSON_CALLOC
-# define XXX_JSON_CALLOC(count, size) calloc(count, size)
-#endif
-
 #ifndef XXX_JSON_ERROR
-# include <stdio.h>
-# define XXX_JSON_ERROR(format, ...) fprintf(stderr, "%s:%d Error: " format "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#include <stdio.h>
+#define XXX_JSON_ERROR(format, ...) fprintf(stderr, "%s:%d Error: " format "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#endif
+
+#ifndef XXX_JSON_ALLOCATOR
+#include <stdlib.h>
+#define XXX_JSON_FREE free
+#define XXX_JSON_MALLOC malloc
+#define XXX_JSON_REALLOC realloc
+#define XXX_JSON_CALLOC calloc
 #endif
 
 enum XXX_JSON_TYPE {
@@ -61,7 +43,7 @@ static inline void xxx_json_boolean_move(xxx_json_boolean_t *dst, xxx_json_boole
 
 static inline int xxx_json_number_init(xxx_json_number_t *self);
 static inline void xxx_json_number_deinit(xxx_json_number_t *self);
-static inline int xxx_json_number_copy(xxx_json_number_t *RESTRICT dst, const xxx_json_number_t *RESTRICT src);
+static inline int xxx_json_number_copy(xxx_json_number_t *dst, const xxx_json_number_t *src);
 static inline void xxx_json_number_move(xxx_json_number_t *dst, xxx_json_number_t *src);
 
 static inline int xxx_json_string_init(xxx_json_string_t *self);
